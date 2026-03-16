@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>キミは何の博士？ 〜ふしぎなAI図鑑〜</title>
+    
+    <!-- Google Fonts: M PLUS Rounded 1c (Friendly, kids-oriented) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+    <div id="app" class="app-container">
+        
+        <!-- Header -->
+        <header id="main-header" class="hidden">
+            <button id="btn-back" class="icon-btn"><span class="material-symbols-rounded">arrow_back</span></button>
+            <h1 id="header-title">図鑑</h1>
+            <div style="width: 48px;"></div> <!-- Placeholder for layout balance -->
+        </header>
+
+        <!-- VIEW: Home (Title Screen) -->
+        <section id="view-home" class="view active">
+            <div class="home-content">
+                <div class="title-logo">
+                    <span class="sub-title">キミは何の博士？</span>
+                    <h1 class="main-title">ふしぎな<br>AI図鑑</h1>
+                    <div class="sparkles">✨</div>
+                </div>
+                
+                <div class="main-actions">
+                    <button id="btn-start-camera" class="btn-primary pulse-anim">
+                        <span class="material-symbols-rounded">photo_camera</span>
+                        <span>ものを さがしにいく！</span>
+                    </button>
+                    
+                    <button id="btn-open-encyclopedia" class="btn-secondary">
+                        <span class="material-symbols-rounded">menu_book</span>
+                        <span>ずかんを みる</span>
+                    </button>
+                </div>
+                
+                <button id="btn-open-settings" class="btn-text">
+                    <span class="material-symbols-rounded">settings</span> 設定とデータ
+                </button>
+            </div>
+            
+            <!-- Background Decorations -->
+            <div class="bg-shape circle-1"></div>
+            <div class="bg-shape circle-2"></div>
+            <div class="bg-shape star-1">⭐</div>
+            <div class="bg-shape star-2">👑</div>
+        </section>
+
+        <!-- VIEW: Settings -->
+        <section id="view-settings" class="view hidden">
+            <div class="scroll-container">
+                <div class="settings-card">
+                    <h2>⚙️ 設定</h2>
+                    <p class="help-text">保護者の方へ：このアプリはGemini APIを使用します。APIキーを入力してください。</p>
+                    
+                    <div class="form-group">
+                        <label for="input-api-key">Gemini API Key</label>
+                        <input type="password" id="input-api-key" placeholder="AIzaSy...">
+                        <button id="btn-save-key" class="btn-outline">保存する</button>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h2>🔄 データのバックアップ</h2>
+                    <p class="help-text">図鑑のデータを書き出して、機種変更時などに復元できます。</p>
+                    <div class="button-group">
+                        <button id="btn-export" class="btn-outline">
+                            <span class="material-symbols-rounded">download</span> データを書き出す
+                        </button>
+                        <button id="btn-import-trigger" class="btn-outline">
+                            <span class="material-symbols-rounded">upload</span> データを読み込む
+                        </button>
+                        <input type="file" id="input-import-file" accept=".json" class="hidden-input">
+                    </div>
+                </div>
+                
+                <div class="settings-card danger-zone">
+                    <h2>⚠️ データリセット</h2>
+                    <button id="btn-clear-db" class="btn-danger">すべての図鑑データを消去</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: Camera -->
+        <section id="view-camera" class="view hidden">
+            <div class="camera-container">
+                <video id="camera-feed" autoplay playsinline></video>
+                <div class="camera-overlay">
+                    <div class="target-box"></div>
+                    <p class="camera-instruction">ふしぎなモノを わく の中に いれてね！</p>
+                </div>
+            </div>
+            <div class="camera-controls">
+                <label class="btn-icon">
+                    <span class="material-symbols-rounded">image</span>
+                    <input type="file" id="input-upload-image" accept="image/*" class="hidden-input">
+                </label>
+                <button id="btn-take-photo" class="shutter-btn"></button>
+                <button id="btn-switch-camera" class="btn-icon"><span class="material-symbols-rounded">cameraswitch</span></button>
+            </div>
+        </section>
+
+        <!-- VIEW: Appraisal (Loading) -->
+        <section id="view-appraisal" class="view hidden">
+            <div class="appraisal-content">
+                <div class="scanner-anim">
+                    <img id="preview-image" src="" alt="Preview">
+                    <div class="scan-line"></div>
+                </div>
+                <h2 class="loading-text">AIが かんてい中...<span class="dots"></span></h2>
+                <p class="loading-subtext">どんなアイテムになるかな？<br>ドキドキ...</p>
+            </div>
+        </section>
+
+        <!-- VIEW: Result (Card) -->
+        <section id="view-result" class="view hidden">
+            <div class="scroll-container">
+                <div id="card-container" class="item-card result-card">
+                    <!-- Dynamic Content -->
+                    <div class="card-header">
+                        <div class="card-rarity" id="result-rarity">★★★★★</div>
+                        <h2 class="card-name" id="result-name">伝説のかぶと</h2>
+                    </div>
+                    <div class="card-image-box">
+                        <img id="result-image" src="" alt="Item Image">
+                    </div>
+                    <div class="card-body">
+                        <p class="card-desc" id="result-desc">炎を防ぐふしぎな力がある。被ると少し暑い。</p>
+                    </div>
+                </div>
+                
+                <div class="result-actions">
+                    <button id="btn-save-encyclopedia" class="btn-primary">
+                        <span class="material-symbols-rounded">star</span>
+                        <span>ずかんに ほぞんする！</span>
+                    </button>
+                    <button id="btn-retry-camera" class="btn-secondary">
+                        やりなおす
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: Encyclopedia -->
+        <section id="view-encyclopedia" class="view hidden">
+            <div class="scroll-container">
+                <div class="encyclopedia-stats">
+                    <span>みつけたアイテム：</span>
+                    <span id="stat-total-items" class="stat-num">0</span>
+                    <span>コ</span>
+                </div>
+                <div id="encyclopedia-grid" class="item-grid">
+                    <!-- Items injected by JS -->
+                </div>
+                <div id="empty-state" class="empty-state hidden">
+                    <span class="material-symbols-rounded empty-icon">sentiment_dissatisfied</span>
+                    <p>まだ アイテムが ないよ。<br>カメラで さがしにいこう！</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: Card Detail Modal -->
+        <section id="view-detail" class="view modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <button id="btn-close-detail" class="icon-btn close-btn"><span class="material-symbols-rounded">close</span></button>
+                
+                <div id="detail-card-container" class="item-card detail-card">
+                    <div class="card-header">
+                        <div class="card-rarity" id="detail-rarity">★★★</div>
+                        <h2 class="card-name" id="detail-name">名前</h2>
+                    </div>
+                    <div class="card-image-box">
+                        <img id="detail-image" src="" alt="Item Image">
+                    </div>
+                    <div class="card-body">
+                        <p class="card-desc" id="detail-desc">説明文</p>
+                        <p class="card-date" id="detail-date">2026/03/16 発見</p>
+                    </div>
+                </div>
+                
+                <div class="detail-actions">
+                    <button id="btn-download-card" class="btn-outline">
+                        <span class="material-symbols-rounded">download</span> カードを保存
+                    </button>
+                    <button id="btn-delete-item" class="btn-danger-text">
+                        <span class="material-symbols-rounded">delete</span> このアイテムを消す
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast hidden">Message</div>
+    </div>
+
+    <!-- html2canvas for card saving -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    
+    <!-- App Scripts -->
+    <script type="module" src="storage.js?v=2"></script>
+    <script type="module" src="gemini.js?v=10"></script>
+    <script type="module" src="app.js?v=10"></script>
+</body>
+</html>

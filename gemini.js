@@ -87,6 +87,10 @@ export async function appraiseImage(base64Image, mimeType, apiKey) {
 
         if (!response.ok) {
             const err = await response.json();
+          // Check for Quota/Rate Limit
+            if (response.status === 429 || (err.error?.message && err.error.message.includes("Quota"))) {
+                 throw new Error("AIがちょっと休憩中です！約1分ほど待ってから、もう一度ためしてね。（無料枠の制限）");
+            }
             throw new Error(err.error?.message || "Gemini APIエラーが発生しました。");
         }
 

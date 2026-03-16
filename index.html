@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>キミはどんなアイテムをあつめる？ 〜ふしぎなAIずかん〜</title>
-    
+
     <!-- Google Fonts: M PLUS Rounded 1c (Friendly, kids-oriented) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800;900&display=swap"
+        rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=2">
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0"
+        rel="stylesheet" />
+
+    <link rel="stylesheet" href="style.css?v=15">
 </head>
+
 <body>
     <div id="app" class="app-container">
-        
+
         <!-- Header -->
         <header id="main-header" class="hidden">
             <button id="btn-back" class="icon-btn"><span class="material-symbols-rounded">arrow_back</span></button>
-            <h1 id="header-title">AIずかん</h1>
+            <h1 id="header-title">図鑑</h1>
             <div style="width: 48px;"></div> <!-- Placeholder for layout balance -->
         </header>
 
@@ -33,24 +37,24 @@
                     <h1 class="main-title">ふしぎな<br>AIずかん</h1>
                     <div class="sparkles">✨</div>
                 </div>
-                
+
                 <div class="main-actions">
                     <button id="btn-start-camera" class="btn-primary pulse-anim">
                         <span class="material-symbols-rounded">photo_camera</span>
                         <span>ものを さがしにいく！</span>
                     </button>
-                    
+
                     <button id="btn-open-encyclopedia" class="btn-secondary">
                         <span class="material-symbols-rounded">menu_book</span>
                         <span>ずかんを みる</span>
                     </button>
                 </div>
-                
+
                 <button id="btn-open-settings" class="btn-text">
                     <span class="material-symbols-rounded">settings</span> 設定とデータ
                 </button>
             </div>
-            
+
             <!-- Background Decorations -->
             <div class="bg-shape circle-1"></div>
             <div class="bg-shape circle-2"></div>
@@ -64,7 +68,7 @@
                 <div class="settings-card">
                     <h2>⚙️ 設定</h2>
                     <p class="help-text">保護者の方へ：このアプリはGemini APIを使用します。APIキーを入力してください。</p>
-                    
+
                     <div class="form-group">
                         <label for="input-api-key">Gemini API Key</label>
                         <input type="password" id="input-api-key" placeholder="AIzaSy...">
@@ -85,7 +89,7 @@
                         <input type="file" id="input-import-file" accept=".json" class="hidden-input">
                     </div>
                 </div>
-                
+
                 <div class="settings-card danger-zone">
                     <h2>⚠️ データリセット</h2>
                     <button id="btn-clear-db" class="btn-danger">すべての図鑑データを消去</button>
@@ -95,6 +99,8 @@
 
         <!-- VIEW: Camera -->
         <section id="view-camera" class="view hidden">
+            <!-- Camera specific back button -->
+            <button id="btn-camera-back" class="icon-btn camera-back-btn"><span class="material-symbols-rounded">arrow_back</span></button>
             <div class="camera-container">
                 <video id="camera-feed" autoplay playsinline></video>
                 <div class="camera-overlay">
@@ -108,7 +114,8 @@
                     <input type="file" id="input-upload-image" accept="image/*" class="hidden-input">
                 </label>
                 <button id="btn-take-photo" class="shutter-btn"></button>
-                <button id="btn-switch-camera" class="btn-icon"><span class="material-symbols-rounded">cameraswitch</span></button>
+                <button id="btn-switch-camera" class="btn-icon"><span
+                        class="material-symbols-rounded">cameraswitch</span></button>
             </div>
         </section>
 
@@ -140,7 +147,7 @@
                         <p class="card-desc" id="result-desc">炎を防ぐふしぎな力がある。被ると少し暑い。</p>
                     </div>
                 </div>
-                
+
                 <div class="result-actions">
                     <button id="btn-save-encyclopedia" class="btn-primary">
                         <span class="material-symbols-rounded">star</span>
@@ -175,8 +182,9 @@
         <section id="view-detail" class="view modal hidden">
             <div class="modal-backdrop"></div>
             <div class="modal-content">
-                <button id="btn-close-detail" class="icon-btn close-btn"><span class="material-symbols-rounded">close</span></button>
-                
+                <button id="btn-close-detail" class="icon-btn close-btn"><span
+                        class="material-symbols-rounded">close</span></button>
+
                 <div id="detail-card-container" class="item-card detail-card">
                     <div class="card-header">
                         <div class="card-rarity" id="detail-rarity">★★★</div>
@@ -190,7 +198,7 @@
                         <p class="card-date" id="detail-date">2026/03/16 はっけん</p>
                     </div>
                 </div>
-                
+
                 <div class="detail-actions">
                     <button id="btn-download-card" class="btn-outline">
                         <span class="material-symbols-rounded">download</span> カードをほぞん
@@ -208,10 +216,11 @@
 
     <!-- html2canvas for card saving -->
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    
+
     <!-- App Scripts -->
     <script type="module" src="storage.js?v=2"></script>
-    <script type="module" src="gemini.js?v=10"></script>
-    <script type="module" src="app.js?v=10"></script>
+    <script type="module" src="gemini.js?v=16"></script>
+    <script type="module" src="app.js?v=16"></script>
 </body>
+
 </html>

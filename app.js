@@ -160,6 +160,9 @@ function setupEventListeners() {
     document.getElementById('btn-take-photo').addEventListener('click', takePhoto);
     document.getElementById('btn-switch-camera').addEventListener('click', switchCamera);
     document.getElementById('input-upload-image').addEventListener('change', handleImageUpload);
+    document.getElementById('btn-camera-back').addEventListener('click', () => {
+        navigateTo('home');
+    });
 
     // Result View
     document.getElementById('btn-retry-camera').addEventListener('click', () => {
